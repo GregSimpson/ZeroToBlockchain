@@ -146,6 +146,9 @@ exports.orderAction = function (req, res, next) {
                 order.status = req.body.action;
                 switch (req.body.action)
                 {
+                case 'Pay':
+
+                break;
                 case 'Dispute':
                     console.log('Dispute entered');
                     updateOrder = factory.newTransaction(NS, 'Dispute');
@@ -161,16 +164,49 @@ exports.orderAction = function (req, res, next) {
                     updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
                     break;
                 case 'Order From Supplier':
-                    // ========> Your Code Goes Here <=========
-                break;
+                    // ========> gjs Your Code Goes Here <=========
+                    console.log('Order from Supplier entered for '+order.orderNumber+ ' inbound id: '+ req.body.participant+' with order.seller as: '+order.seller.$identifier);
+                    updateOrder = factory.newTransaction(NS, 'OrderFromSupplier');
+                    updateOrder.provider = factory.newRelationship(NS, 'Provider', req.body.provider);
+                    updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
+                    break;
                 case 'Request Payment':
-                    // ========> Your Code Goes Here <=========
+                    // ========> gjs Your Code Goes Here <=========
+                    console.log('Request Payment entered');
+                    updateOrder = factory.newTransaction(NS, 'RequestPayment');
+                    updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
+                    updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
                     break;
                 case 'Refund':
-                    // ========> Your Code Goes Here <=========
+                    // ========> gjs Your Code Goes Here <=========
+                    console.log('Refund Payment entered');
+                    updateOrder = factory.newTransaction(NS, 'Refund');
+                    updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
+                    updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
+                    updateOrder.refund = req.body.reason;
                     break;
                 case 'Resolve':
-                    // ========> Your Code Goes Here <=========
+                    // ========> gjs Your Code Goes Here <=========
+                    console.log('Resolve entered');
+                    updateOrder = factory.newTransaction(NS, 'Resolve');
+                    updateOrder.buyer = factory.newRelationship(NS, 'Buyer', order.buyer.$identifier);
+                    updateOrder.shipper = factory.newRelationship(NS, 'Shipper', order.shipper.$identifier);
+                    updateOrder.provider = factory.newRelationship(NS, 'Provider', order.provider.$identifier);
+                    updateOrder.seller = factory.newRelationship(NS, 'Seller', order.seller.$identifier);
+                    updateOrder.financeCo = factory.newRelationship(NS, 'FinanceCo', financeCoID);
+                    updateOrder.resolve = req.body.reason;
+                    break;
+                case 'Request Shipping':
+
+                    break;
+                case 'Update Delivery Status':
+
+                    break;
+                case 'Delivered':
+
+                    break;
+                case 'BackOrder':
+
                     break;
                 case 'Authorize Payment':
                     console.log('Authorize Payment entered');
